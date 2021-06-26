@@ -1,21 +1,25 @@
 .header {
-    position: relative;
     background-color: #222;
     height: 36px;
-    padding: 8px 8px 32px 16px;
+    padding: 8px 32px 8px 16px;
 }
 
 .logo {
-    background-color: #ff7f7f;
-    animation: rotation 8s infinite linear;
+    background: #ff7f7f;
+    animation: l-spin infinite 8s linear;
     height: 35px;
-    width: 100px;
-    left: 10px;
 }
 
 .login-logout {
-    position: absolute;
-    right: 10px;
-    left: 1200px;
-    top: 5px;
+    float: right;
 }
+
+.bookshow {
+    float: right;
+    margin-right: 10px;
+}
+
+@keyframes l-spin {
+    from { transform: scaleX(-1); }
+}
+
