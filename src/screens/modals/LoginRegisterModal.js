@@ -46,7 +46,7 @@ const LoginRegisterModal = (props) => {
       onRequestClose={props.functions.closeModalHandler}
       style={mStyle}
     >
-      <Tabs className="tabs" value={props.model.tabOrder} onChange={(event) => props.functions.tabChangeHandler(event.target.value)}>
+      <Tabs className="tabs" value={props.model.tabOrder} onChange={props.functions.tabChangeHandler}>
         <Tab label="Login" />
         <Tab label="Register" />
       </Tabs>

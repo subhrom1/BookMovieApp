@@ -21,7 +21,7 @@ const Header = (props) => {
     const BLANK = '';
 
     const [model, setModel] = useState({
-        loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
+        loggedIn: sessionStorage.getItem("access-token") != null,
         modalIsOpen: false,
         tabOrder: 0,
         req: "req",
@@ -76,6 +76,7 @@ const Header = (props) => {
 
     const openModalHandler = () => {
         setModel({
+            loggedIn: sessionStorage.getItem("access-token") != null,
             modalIsOpen: true,
             tabOrder: 0,
             req: "req",
@@ -85,7 +86,8 @@ const Header = (props) => {
             lastname: BLANK,
             email: BLANK,
             registerPassword: BLANK,
-            contact: BLANK
+            contact: BLANK,
+            registrationSuccess:false
         });
     }
 
@@ -93,7 +95,7 @@ const Header = (props) => {
         setModel({ ...model, modalIsOpen: false });
     }
 
-    const tabChangeHandler = (event, value) => {
+    const tabChangeHandler = (event,value) => {
         setModel({ ...model, tabOrder:value});
     }
 
@@ -105,28 +107,21 @@ const Header = (props) => {
             headers: {...headers, 'Authorization':'Basic ' + btoa(model.username + ":" + model.loginPassword)}
         })
             .then((response) => {
-                let respHeaders = response.headers;
-                if (respHeaders && respHeaders.get('access-token')) {
-                    sessionStorage.setItem('access-token', respHeaders.get('access-token'));
-                }
-                return response.json()
-            })
-            .then(data => {
-                sessionStorage.setItem("uuid", data.id);
-
                 setModel({
                     ...model, 
                     loggedIn: true
                 });
 
+                let respHeaders = response.headers;
+                if (respHeaders && respHeaders.get('access-token')) {
+                    sessionStorage.setItem('access-token', respHeaders.get('access-token'));
+                }
+
                 closeModalHandler();
+                return response.json()
             })
-            .catch((error) => {
-                console.log(error);
-                setModel({
-                    ...model, 
-                    loggedIn: false
-                });
+            .then(data => {
+                sessionStorage.setItem("uuid", data.id);
             });
     }
 
@@ -153,7 +148,9 @@ const Header = (props) => {
             method: 'POST',
             headers,
             body: dataSign
-        });
+        }).then(
+            setModel({...model,registrationSuccess:true})
+        );
     };
 
     const functions = {
@@ -199,7 +196,7 @@ const Header = (props) => {
                 }
 
                 {props.showBookShowButton === "true" && model.loggedIn
-                    ? <div className="bookshow-button">
+                    ? <div className="bookshow">
                         <Link to={"/bookshow/" + props.id}>
                             <Button variant="contained" color="primary">
                                 Book Show
