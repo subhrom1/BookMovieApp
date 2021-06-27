@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './Header.css';
 import Button from '@material-ui/core/Button';
 
@@ -6,230 +6,216 @@ import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.svg';
 import LoginRegisterModal from '../../screens/modals/LoginRegisterModal';
 
+const Header = (props) => {
 
-class Header extends Component {
-
-       constructor() {
-        super();
-       this.state = {
-            loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
-            modalIsOpen: false,
-            value: 0,
-            req:"req",
-            username: "",
-            loginPassword: "",
-            firstname: "",
-            lastname: "",
-            email: "",
-            registerPassword: "",
-            contact: "",
-            registrationSuccess: false,
-            inputFirstNameChangeHandler:this.inputFirstNameChangeHandler,
-            inputLastNameChangeHandler:this.inputLastNameChangeHandler,
-            inputEmailChangeHandler:this.inputEmailChangeHandler,
-            inputRegisterPasswordChangeHandler:this.inputRegisterPasswordChangeHandler,
-            inputContactChangeHandler:this.inputContactChangeHandler,
-            logoutHandler:this.logoutHandler,
-            inputUsernameChangeHandler:this.inputUsernameChangeHandler,
-            inputLoginPasswordChangeHandler:this.inputLoginPasswordChangeHandler,
-            openModalHandler:this.openModalHandler,
-            closeModalHandler:this.closeModalHandler,
-            tabChangeHandler:this.tabChangeHandler,
-            loginClickHandler:this.loginClickHandler,
-            registerClickHandler:this.registerClickHandler 
+    const headers = {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
+        "access-control-allow-methods": "HEAD, POST, PUT, GET, PATCH, DELETE",
+        "access-control-allow-headers": "Content-Type, X-Requested-With, accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, X-FORWARDED-FOR, authorization",
+        "access-control-expose-headers": "access-token, request-id, location",
+        "access-control-allow-credentials": "true"
     };
-}
 
-   
+    const BLANK = '';
 
-    render() {
-        return (
-            <div>
-                <header className="header">
-                    <img src={logo} className="logo" alt="Movies App Logo" />
-                    {!this.state.loggedIn ?
-                        <div className="login-logout">
-                            <Button variant="contained" color="default" onClick={this.openModalHandler}>
-                                Login
-                            </Button>
-                        </div>
-                        :
-                        <div className="login-logout">
-                            <Button variant="contained" color="default" onClick={this.logoutHandler}>
-                                Logout
-                            </Button>
-                        </div>
-                    }
-                    {this.props.showBookShowButton === "true" && !this.state.loggedIn
-                        ? <div className="bookshow">
-                            <Button variant="contained" color="primary" onClick={this.openModalHandler}>
-                                Book Show
-                            </Button>
-                        </div>
-                        : ""
-                    }
+    const [model, setModel] = useState({
+        loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
+        modalIsOpen: false,
+        tabOrder: 0,
+        req: "req",
+        username: BLANK,
+        loginPassword: BLANK,
+        firstname: BLANK,
+        lastname: BLANK,
+        email: BLANK,
+        registerPassword: BLANK,
+        contact: BLANK,
+        registrationSuccess: false,
+    });
 
-                    {this.props.showBookShowButton === "true" && this.state.loggedIn
-                        ? <div className="bookshow-button">
-                            <Link to={"/bookshow/" + this.props.id}>
-                                <Button variant="contained" color="primary">
-                                    Book Show
-                                </Button>
-                            </Link>
-                        </div>
-                        : ""
-                    }
-
-                </header>
-
-                <LoginRegisterModal model = {this.state} />
-               
-            </div>
-        )
+    const inputFirstNameChangeHandler = (value) => {
+        setModel({ ...model, firstname: value });
     }
 
-    inputFirstNameChangeHandler = (e) => {
-        this.setState({ firstname: e.target.value });
+    const inputLastNameChangeHandler = (value) => {
+        setModel({ ...model, lastname: value });
     }
 
-    inputLastNameChangeHandler = (e) => {
-        this.setState({ lastname: e.target.value });
+    const inputEmailChangeHandler = (value) => {
+        setModel({ ...model, email: value });
     }
 
-    inputEmailChangeHandler = (e) => {
-        this.setState({ email: e.target.value });
+    const inputRegisterPasswordChangeHandler = (value) => {
+        setModel({ ...model, registerPassword: value });
     }
 
-    inputRegisterPasswordChangeHandler = (e) => {
-        this.setState({ registerPassword: e.target.value });
+    const inputContactChangeHandler = (value) => {
+        setModel({ ...model, contact:value });
     }
 
-    inputContactChangeHandler = (e) => {
-        this.setState({ contact: e.target.value });
-    }
-
-    logoutHandler = (e) => {
+    const logoutHandler = (e) => {
         sessionStorage.removeItem("uuid");
         sessionStorage.removeItem("access-token");
 
-        this.setState({
+        setModel({
+            ...model,
             loggedIn: false
         });
     }
 
 
-    inputUsernameChangeHandler = (e) => {
-        this.setState({ username: e.target.value });
+    const inputUsernameChangeHandler = (value) => {
+        setModel({ ...model, username: value });
     }
 
-    inputLoginPasswordChangeHandler = (e) => {
-        this.setState({ loginPassword: e.target.value });
+    const inputLoginPasswordChangeHandler = (value) => {
+        setModel({ ...model, loginPassword: value });
     }
 
-    openModalHandler = () => {
-        this.setState({
+    const openModalHandler = () => {
+        setModel({
             modalIsOpen: true,
-            value: 0,
+            tabOrder: 0,
             req: "req",
-            username: "",
-            loginPassword: "",
-            firstname: "",
-            lastname: "",
-            email: "",
-            registerPassword: "",
-            contact: ""
+            username: BLANK,
+            loginPassword: BLANK,
+            firstname: BLANK,
+            lastname: BLANK,
+            email: BLANK,
+            registerPassword: BLANK,
+            contact: BLANK
         });
     }
 
-    closeModalHandler = () => {
-        this.setState({ modalIsOpen: false });
+    const closeModalHandler = () => {
+        setModel({ ...model, modalIsOpen: false });
     }
 
-    tabChangeHandler = (event, value) => {
-        this.setState({ value });
+    const tabChangeHandler = (event, value) => {
+        setModel({ ...model, tabOrder:value});
     }
 
-    loginClickHandler = () => {
-        this.state.username === "" ? this.setState({ usernameRequired: "dispBlock" }) : this.setState({ usernameRequired: "dispNone" });
-        this.state.loginPassword === "" ? this.setState({ loginPasswordRequired: "dispBlock" }) : this.setState({ loginPasswordRequired: "dispNone" });
+    const loginClickHandler = () => {
+        model.username === "" || model.loginPassword === "" ? setModel({ ...model, req: "block" }) : setModel({ ...model, req: "req" });
 
-        let dataLogin = null;
-        let xhrLogin = new XMLHttpRequest();
-        let that = this;
-
-        let headers = {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache',
-            'Access-Control-Allow-Origin': '*',
-            "Authorization": "Basic " + window.btoa(this.state.username + ":" + this.state.loginPassword),
-            "access-control-allow-methods": "HEAD, POST, PUT, GET, PATCH, DELETE",
-            "access-control-allow-headers": "Content-Type, X-Requested-With, accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, X-FORWARDED-FOR, authorization",
-            "access-control-expose-headers": "access-token, request-id, location",
-            "access-control-allow-credentials": "true"
-        };
-
-        fetch('http://localhost:8085/api/v1/auth/login', {
+        fetch(`${props.baseUrl}auth/login`, {
             method: 'POST',
-            headers
+            headers: {...headers, 'Authorization':'Basic ' + btoa(model.username + ":" + model.loginPassword)}
         })
-            .then(response => response.json())
+            .then((response) => {
+                let respHeaders = response.headers;
+                if (respHeaders && respHeaders.get('access-token')) {
+                    sessionStorage.setItem('access-token', respHeaders.get('access-token'));
+                }
+                return response.json()
+            })
             .then(data => {
-                sessionStorage.setItem("uuid", JSON.parse(this.responseText).id);
-                sessionStorage.setItem("access-token", xhrLogin.getResponseHeader("access-token"));
+                sessionStorage.setItem("uuid", data.id);
 
-                that.setState({
+                setModel({
+                    ...model, 
                     loggedIn: true
                 });
 
-                that.closeModalHandler();
+                closeModalHandler();
             })
             .catch((error) => {
-                console.error('Error:', error);
+                console.log(error);
+                setModel({
+                    ...model, 
+                    loggedIn: false
+                });
             });
     }
 
 
-    registerClickHandler = () => {
-        if (this.state.firstname === "" || this.state.lastname === ""
-         || this.state.email === "" || this.state.registerPassword === "" 
-         || this.state.contact === "" ) {
-             this.setState({req:'blk'});
-         }
-         else {
-             this.setState({req:'req'});
-         }
+    const registerClickHandler = () => {
+        if (model.firstname === "" || model.lastname === ""
+            || model.email === "" || model.registerPassword === ""
+            || model.contact === "") {
+            setModel({...model,  req: 'blk' });
+        }
+        else {
+            setModel({ ...model, req: 'req' });
+        }
 
-        let dataSignup = JSON.stringify({
-            "email_address": this.state.email,
-            "first_name": this.state.firstname,
-            "last_name": this.state.lastname,
-            "mobile_number": this.state.contact,
-            "password": this.state.registerPassword
+        let dataSign = JSON.stringify({
+            "email_address": model.email,
+            "first_name": model.firstname,
+            "last_name": model.lastname,
+            "mobile_number": model.contact,
+            "password": model.registerPassword
         });
 
-        let headers = {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache',
-            'Access-Control-Allow-Origin': '*',
-            "access-control-allow-methods": "HEAD, POST, PUT, GET, PATCH, DELETE",
-            "access-control-allow-headers": "Content-Type, X-Requested-With, accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, X-FORWARDED-FOR, authorization",
-            "access-control-expose-headers": "access-token, request-id, location",
-            "access-control-allow-credentials": "true"
-        };
-
-        fetch('http://localhost:8085/api/v1/signup', {
+            fetch(`${props.baseUrl}signup`, {
             method: 'POST',
             headers,
-            body: JSON.stringify(dataSignup),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
+            body: dataSign
+        });
+    };
+
+    const functions = {
+        inputFirstNameChangeHandler,
+        inputLastNameChangeHandler,
+        inputEmailChangeHandler,
+        inputRegisterPasswordChangeHandler,
+        inputContactChangeHandler,
+        logoutHandler,
+        inputUsernameChangeHandler,
+        inputLoginPasswordChangeHandler,
+        openModalHandler,
+        closeModalHandler,
+        tabChangeHandler,
+        loginClickHandler,
+        registerClickHandler
+    };
+
+    return (
+        <div>
+            <header className="header">
+                <img src={logo} className="logo" alt="Movies App Logo" />
+                {!model.loggedIn ?
+                    <div className="login-logout">
+                        <Button variant="contained" color="default" onClick={openModalHandler}>
+                            Login
+                        </Button>
+                    </div>
+                    :
+                    <div className="login-logout">
+                        <Button variant="contained" color="default" onClick={logoutHandler}>
+                            Logout
+                        </Button>
+                    </div>
+                }
+                {props.showBookShowButton === "true" && !model.loggedIn
+                    ? <div className="bookshow">
+                        <Button variant="contained" color="primary" onClick={openModalHandler}>
+                            Book Show
+                        </Button>
+                    </div>
+                    : ""
+                }
+
+                {props.showBookShowButton === "true" && model.loggedIn
+                    ? <div className="bookshow-button">
+                        <Link to={"/bookshow/" + props.id}>
+                            <Button variant="contained" color="primary">
+                                Book Show
+                            </Button>
+                        </Link>
+                    </div>
+                    : ""
+                }
+
+            </header>
+
+            <LoginRegisterModal model={model} functions={functions} />
+
+        </div>
+    )
+
 }
 
 export default Header;
