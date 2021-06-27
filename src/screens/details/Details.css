@@ -1,0 +1,76 @@
+.details {
+  text-align: left;
+}
+
+.flex-c {
+  display: flex;
+}
+
+.flex-c>div {
+  margin: 0px 16px;
+}
+
+.details-left {
+  width: 20%;
+  text-align: center;
+}
+
+.details-mddle {
+  width: 60%;
+}
+
+.details-right {
+  width: 20%;
+}
+
+.marginTop {
+  margin-top: 16px;
+}
+
+.pdRight {
+  margin-right: 32px;
+}
+
+.marginBottom {
+  margin-bottom: 16px;
+}
+
+iframe {
+  width: 100% !important;
+}
+
+.centerAlign {
+  text-align: center;
+}
+
+
+.bold {
+  font-weight: bold;
+}
+
+.yellow {
+  color: yellow;
+  cursor: pointer;
+}
+
+.black {
+  color: none;
+  cursor: pointer;
+}
+
+.tc {
+  margin: 16px 0px 16px 0px !important;
+}
+
+.ptr {
+  cursor: pointer;
+}
+
+.back {
+  margin-left: 24px;
+  margin-top: 8px;
+  margin-bottom: 0px;
+  height: 24px;
+  cursor: pointer;
+}
+
